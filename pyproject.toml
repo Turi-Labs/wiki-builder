@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wiki-builder"
+version = "0.1.0"
+description = "Build personal knowledge bases with LLMs"
+requires-python = ">=3.10"
+dependencies = [
+    "typer>=0.12",
+    "anthropic>=0.40",
+    "openai>=1.0",
+    "rich>=13",
+]
+
+[project.scripts]
+wiki = "wiki_builder.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["wiki_builder"]
