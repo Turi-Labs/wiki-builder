@@ -1,3 +1,5 @@
+import shutil
+import subprocess
 import typer
 from pathlib import Path
 from typing import Optional
@@ -15,6 +17,54 @@ app = typer.Typer(
     no_args_is_help=True,
 )
 console = Console()
+
+
+def _is_pdf(path: Path) -> bool:
+    try:
+        with path.open("rb") as f:
+            return f.read(5) == b"%PDF-"
+    except OSError:
+        return False
+
+
+def _pdf_text_output_path(source: Path) -> Path:
+    if source.suffix.lower() == ".txt":
+        return source.with_name(f"{source.stem}-converted.txt")
+    return source.with_suffix(".txt")
+
+
+def _convert_pdf_to_text(source: Path, *, delete_source: bool = False) -> Path:
+    pdftotext = shutil.which("pdftotext")
+    if pdftotext is None:
+        console.print(
+            "[red]PDF source detected, but `pdftotext` is not installed.[/red]\n"
+            "Install Poppler tools, or convert the PDF to text/markdown before ingesting."
+        )
+        raise typer.Exit(1)
+
+    output = _pdf_text_output_path(source)
+    console.print(f"[yellow]PDF detected. Converting to text:[/yellow] {output.name}")
+    try:
+        subprocess.run(
+            [pdftotext, str(source), str(output)],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except subprocess.CalledProcessError as e:
+        error = e.stderr.strip() or e.stdout.strip() or "Unknown conversion error"
+        console.print(f"[red]Failed to convert PDF to text:[/red] {error}")
+        raise typer.Exit(1)
+
+    if not output.exists() or not output.read_text(encoding="utf-8", errors="replace").strip():
+        console.print("[red]PDF conversion produced no extractable text.[/red]")
+        raise typer.Exit(1)
+
+    if delete_source:
+        source.unlink()
+        console.print(f"[yellow]Deleted original PDF:[/yellow] {source.name}")
+
+    return output
 
 
 def _get_wiki_root(wiki: Optional[Path]) -> Path:
@@ -84,6 +134,11 @@ def ingest(
     thinking: bool = typer.Option(False, "--thinking", help="Show LLM thinking (Anthropic only)"),
     provider: Optional[str] = typer.Option(None, "--provider", "-p", help="LLM provider: anthropic, openai"),
     model: Optional[str] = typer.Option(None, "--model", "-m", help="Model override"),
+    delete_pdf: bool = typer.Option(
+        False,
+        "--delete-pdf",
+        help="Delete a PDF source after converting it to text",
+    ),
 ):
     """Ingest a source document into the wiki."""
     root = _get_wiki_root(wiki)
@@ -92,10 +147,16 @@ def ingest(
         console.print(f"[red]Source file not found: {source}[/red]")
         raise typer.Exit(1)
 
-    console.print(f"[bold]Ingesting:[/bold] {source.name}")
+    ingest_source = (
+        _convert_pdf_to_text(source, delete_source=delete_pdf)
+        if _is_pdf(source)
+        else source
+    )
+
+    console.print(f"[bold]Ingesting:[/bold] {ingest_source.name}")
     console.print(f"[dim]Wiki root: {root}[/dim]\n")
 
-    system, user = build_ingest_prompt(root, source.resolve())
+    system, user = build_ingest_prompt(root, ingest_source.resolve())
     result = run_agent(root, system, user, show_thinking=thinking, provider=provider, model=model)
 
     if result:
