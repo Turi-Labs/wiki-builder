@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wiki-builder — Persistent knowledge bases with LLMs</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav>
+    <span class="brand">wiki-builder</span>
+    <a class="nav-docs" href="../docs/index.html">Documentation &rarr;</a>
+  </nav>
+
+  <main>
+
+    <!-- Hero -->
+    <section class="hero">
+      <p class="tag">Open source &middot; CLI &middot; Python</p>
+      <h1>A CLI for building persistent knowledge bases with LLMs.</h1>
+      <p class="sub">
+        Drop in source documents. The LLM reads them, writes structured markdown pages, maintains cross-links, and keeps everything up to date — so your knowledge compounds instead of disappearing.
+      </p>
+      <div class="install-box">
+        <code>pip install wiki-builder</code>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="../docs/setup.html">Get started</a>
+        <a class="btn" href="../docs/index.html">Read the docs</a>
+      </div>
+    </section>
+
+    <!-- Why -->
+    <section class="section">
+      <h2>Why wiki-builder?</h2>
+      <div class="why-grid">
+        <div class="why-item">
+          <h3>Not RAG</h3>
+          <p>RAG re-derives context from raw documents on every query. wiki-builder integrates sources into a persistent wiki that grows smarter over time.</p>
+        </div>
+        <div class="why-item">
+          <h3>Plain markdown files</h3>
+          <p>The knowledge base is just a folder of <code>.md</code> files. Open it in Obsidian, VS Code, or any editor. No database, no lock-in.</p>
+        </div>
+        <div class="why-item">
+          <h3>LLM does the work</h3>
+          <p>The agent reads your schema, inspects the existing wiki, and writes summaries, concept pages, entity pages, and cross-links in one pass.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quickstart -->
+    <section class="section">
+      <h2>Quickstart</h2>
+      <p class="section-sub">Get from zero to a working wiki in a few commands.</p>
+
+      <div class="qs-step">
+        <div class="qs-label">1. Install</div>
+        <pre><code>pip install wiki-builder</code></pre>
+      </div>
+
+      <div class="qs-step">
+        <div class="qs-label">2. Set your API key</div>
+        <pre><code>export ANTHROPIC_API_KEY=sk-ant-...
+# or
+wiki config --provider anthropic --api-key sk-ant-...</code></pre>
+      </div>
+
+      <div class="qs-step">
+        <div class="qs-label">3. Create a wiki</div>
+        <pre><code>wiki init my-research/ --name "AI Research"</code></pre>
+      </div>
+
+      <div class="qs-step">
+        <div class="qs-label">4. Add a source document</div>
+        <pre><code>cp ~/papers/paper.md my-research/raw/</code></pre>
+      </div>
+
+      <div class="qs-step">
+        <div class="qs-label">5. Ingest it</div>
+        <pre><code>cd my-research
+wiki ingest raw/paper.md</code></pre>
+        <p class="qs-note">The LLM writes a source summary, creates concept and entity pages, and updates the index.</p>
+      </div>
+
+      <div class="qs-step">
+        <div class="qs-label">6. Query your knowledge base</div>
+        <pre><code>wiki query "what is self-attention and why does it matter?"</code></pre>
+      </div>
+
+      <div class="qs-step">
+        <div class="qs-label">7. Check wiki health</div>
+        <pre><code>wiki status
+wiki lint</code></pre>
+      </div>
+
+      <a class="btn primary" href="../docs/setup.html">Full setup guide &rarr;</a>
+    </section>
+
+    <!-- Commands overview -->
+    <section class="section">
+      <h2>Commands</h2>
+      <table class="cmd-table">
+        <tbody>
+          <tr>
+            <td><code>wiki init &lt;path&gt;</code></td>
+            <td>Scaffold a new wiki project with the right directory structure and a schema file.</td>
+          </tr>
+          <tr>
+            <td><code>wiki ingest &lt;file&gt;</code></td>
+            <td>Ingest a source document into the wiki. Supports <code>.md</code>, <code>.txt</code>, and PDFs.</td>
+          </tr>
+          <tr>
+            <td><code>wiki query "&lt;question&gt;"</code></td>
+            <td>Ask a question. The LLM reads the wiki and synthesizes an answer.</td>
+          </tr>
+          <tr>
+            <td><code>wiki lint</code></td>
+            <td>Health check — finds orphan pages, missing links, contradictions, and stale claims.</td>
+          </tr>
+          <tr>
+            <td><code>wiki status</code></td>
+            <td>Show page counts and word totals. No LLM call.</td>
+          </tr>
+          <tr>
+            <td><code>wiki config</code></td>
+            <td>Set default provider, model, and API key.</td>
+          </tr>
+        </tbody>
+      </table>
+      <a class="btn" href="../docs/commands.html">Full command reference &rarr;</a>
+    </section>
+
+    <!-- Docs link -->
+    <section class="section docs-cta">
+      <h2>Documentation</h2>
+      <div class="docs-links">
+        <a href="../docs/index.html">
+          <strong>Overview</strong>
+          <span>What wiki-builder is and how it works</span>
+        </a>
+        <a href="../docs/setup.html">
+          <strong>Installation &amp; setup</strong>
+          <span>Requirements, API keys, quickstart</span>
+        </a>
+        <a href="../docs/commands.html">
+          <strong>Command reference</strong>
+          <span>All commands, flags, and examples</span>
+        </a>
+        <a href="../docs/providers.html">
+          <strong>Providers &amp; models</strong>
+          <span>Anthropic, OpenAI, and model selection</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>wiki-builder</span>
+  </footer>
+
+</body>
+</html>

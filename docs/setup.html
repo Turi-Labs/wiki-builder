@@ -3,93 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>wiki-builder Docs | Setup</title>
-  <link rel="stylesheet" href="../styles.css">
+  <title>wiki-builder — Installation &amp; Setup</title>
+  <link rel="stylesheet" href="docs.css">
 </head>
 <body>
-  <div class="doc-shell">
-    <nav class="nav">
-      <a class="brand" href="../index.html">wiki-builder</a>
-      <div class="nav-links">
-        <a href="../index.html">Home</a>
-        <a href="index.html">Docs</a>
-        <a href="commands.html">Commands</a>
-        <a href="providers.html">Providers</a>
-      </div>
-    </nav>
 
-    <header class="docs-hero">
-      <p class="eyebrow">Setup</p>
-      <h1>Install the CLI and configure a provider.</h1>
-      <p class="docs-intro">
-        `wiki-builder` requires Python 3.10+ and an API key for either Anthropic or OpenAI.
-      </p>
-    </header>
+  <nav>
+    <a class="brand" href="../landing/index.html">wiki-builder</a>
+    <div class="nav-links">
+      <a href="index.html">Docs</a>
+      <a href="setup.html" class="active">Setup</a>
+      <a href="commands.html">Commands</a>
+      <a href="providers.html">Providers</a>
+    </div>
+  </nav>
 
-    <div class="docs-layout">
-      <aside class="toc">
-        <h2>On this page</h2>
-        <a class="active" href="setup.html">Installation and setup</a>
-        <a href="index.html">Docs overview</a>
+  <div class="page">
+
+    <aside class="sidebar">
+      <p class="sidebar-label">Documentation</p>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="setup.html" class="active">Installation &amp; setup</a>
         <a href="commands.html">Command reference</a>
-        <a href="providers.html">Providers and models</a>
-        <a href="architecture.html">Architecture and schema</a>
-      </aside>
+        <a href="providers.html">Providers &amp; models</a>
+        <a href="architecture.html">Architecture</a>
+      </nav>
+    </aside>
 
-      <article class="doc-content">
-        <h2>Installation</h2>
-        <pre><code>git clone https://github.com/yourname/wiki-builder
+    <article class="content">
+      <h1>Installation &amp; setup</h1>
+      <p class="lead">Get wiki-builder installed and running in a few minutes.</p>
+
+      <h2>Requirements</h2>
+      <ul>
+        <li>Python 3.9 or higher</li>
+        <li>An API key for Anthropic or OpenAI</li>
+        <li><code>pdftotext</code> (optional) — required only if you want to ingest PDFs directly</li>
+      </ul>
+
+      <h2>Install</h2>
+      <pre><code>pip install wiki-builder</code></pre>
+      <p>This installs the <code>wiki</code> command into your environment.</p>
+
+      <p>To install from source:</p>
+      <pre><code>git clone https://github.com/theyashwanthsai/wiki-builder
 cd wiki-builder
 pip install -e .</code></pre>
-        <p>This installs the `wiki` command globally in your environment.</p>
 
-        <h2>Dependencies</h2>
-        <p>The package depends on `anthropic`, `openai`, `typer`, and `rich`.</p>
+      <h2>Set an API key</h2>
+      <p>wiki-builder needs an API key to call the LLM. You can provide it in three ways:</p>
 
-        <h2>API keys</h2>
-        <p>Set an API key with environment variables:</p>
-        <pre><code># Anthropic
+      <h3>Option 1 — environment variable (recommended)</h3>
+      <pre><code># Anthropic
 export ANTHROPIC_API_KEY=sk-ant-...
 
 # OpenAI
 export OPENAI_API_KEY=sk-...</code></pre>
+      <p>Add the export to your <code>~/.zshrc</code> or <code>~/.bashrc</code> to persist it across sessions.</p>
 
-        <p>Or save configuration with the CLI:</p>
-        <pre><code>wiki config --provider anthropic --api-key sk-ant-...
+      <h3>Option 2 — CLI config</h3>
+      <pre><code>wiki config --provider anthropic --api-key sk-ant-...
+# or
 wiki config --provider openai --api-key sk-...</code></pre>
+      <p>This saves the key to <code>~/.wiki-builder/config.json</code>.</p>
 
-        <h2>Quickstart</h2>
-        <pre><code>wiki init my-research/ --name "AI Research"
-cp ~/papers/attention-is-all-you-need.md my-research/raw/
+      <h3>Option 3 — per-command flag</h3>
+      <pre><code>wiki ingest raw/paper.md --provider openai</code></pre>
+      <p>The tool resolves provider and key in this order: CLI flags → environment variables → saved config → defaults.</p>
+
+      <h2>Quickstart</h2>
+      <p>Initialize a project, add a document, ingest it, and query the result.</p>
+
+      <pre><code># 1. Create a new wiki
+wiki init my-research/ --name "AI Research"
+
+# 2. Copy in a source document
+cp ~/papers/paper.md my-research/raw/
+
+# 3. Ingest the document
 cd my-research
-wiki ingest raw/attention-is-all-you-need.md
-wiki query "what is self-attention and why does it matter?"
-wiki lint
-wiki status</code></pre>
+wiki ingest raw/paper.md
 
-        <h2>What `wiki init` creates</h2>
-        <pre><code>my-research/
-├── schema.md
+# 4. Query your knowledge base
+wiki query "what are the main contributions of this paper?"
+
+# 5. Check wiki health
+wiki status
+wiki lint</code></pre>
+
+      <h2>What wiki init creates</h2>
+      <pre><code>my-research/
+├── schema.md          # LLM behavioral spec (you can edit this)
 ├── .gitignore
-├── raw/
+├── raw/               # drop source documents here
 │   └── assets/
 └── wiki/
-    ├── index.md
-    ├── log.md
+    ├── index.md       # master catalog
+    ├── log.md         # operation log
     ├── concepts/
     ├── entities/
     └── sources/</code></pre>
 
-        <h2>Recommended working style</h2>
-        <ul>
-          <li>Open the wiki root in Obsidian or VS Code.</li>
-          <li>Ingest sources one at a time for better synthesis quality.</li>
-          <li>Edit `schema.md` when you want different page structure or conventions.</li>
-          <li>Keep `raw/` immutable so it remains your source of truth.</li>
-          <li>Use git in the wiki root so every ingest becomes a natural commit point.</li>
-        </ul>
-      </article>
-    </div>
+      <h2>PDF support</h2>
+      <p>To ingest PDFs, install <code>pdftotext</code> from the Poppler utilities package:</p>
+      <pre><code># macOS
+brew install poppler
+
+# Ubuntu / Debian
+sudo apt install poppler-utils</code></pre>
+      <p>Then pass a PDF directly to <code>wiki ingest</code>:</p>
+      <pre><code>wiki ingest raw/paper.pdf
+
+# Delete the PDF after converting to text
+wiki ingest raw/paper.pdf --delete-pdf</code></pre>
+
+      <h2>Tips</h2>
+      <ul>
+        <li><strong>Ingest one source at a time.</strong> The LLM produces better synthesis when it focuses on a single document.</li>
+        <li><strong>Edit <code>schema.md</code> as you go.</strong> Changing naming conventions or adding page types is just a text edit.</li>
+        <li><strong>Keep <code>raw/</code> immutable.</strong> It's your source of truth. The LLM only writes inside <code>wiki/</code>.</li>
+        <li><strong>Use git.</strong> Every ingest and query-save is a natural commit point. You get full history and easy rollback.</li>
+        <li><strong>Open the wiki in Obsidian.</strong> The graph view and Dataview plugin work great with this layout.</li>
+      </ul>
+
+      <p>Next: <a href="commands.html">Command reference</a></p>
+    </article>
+
   </div>
+
 </body>
 </html>

@@ -3,121 +3,219 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>wiki-builder Docs | Commands</title>
-  <link rel="stylesheet" href="../styles.css">
+  <title>wiki-builder — Command Reference</title>
+  <link rel="stylesheet" href="docs.css">
 </head>
 <body>
-  <div class="doc-shell">
-    <nav class="nav">
-      <a class="brand" href="../index.html">wiki-builder</a>
-      <div class="nav-links">
-        <a href="../index.html">Home</a>
-        <a href="index.html">Docs</a>
-        <a href="setup.html">Setup</a>
+
+  <nav>
+    <a class="brand" href="../landing/index.html">wiki-builder</a>
+    <div class="nav-links">
+      <a href="index.html">Docs</a>
+      <a href="setup.html">Setup</a>
+      <a href="commands.html" class="active">Commands</a>
+      <a href="providers.html">Providers</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <aside class="sidebar">
+      <p class="sidebar-label">Documentation</p>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="setup.html">Installation &amp; setup</a>
+        <a href="commands.html" class="active">Command reference</a>
+        <a href="providers.html">Providers &amp; models</a>
         <a href="architecture.html">Architecture</a>
-      </div>
-    </nav>
+      </nav>
+    </aside>
 
-    <header class="docs-hero">
-      <p class="eyebrow">Commands</p>
-      <h1>Reference for the `wiki` CLI.</h1>
-      <p class="docs-intro">
-        These commands come directly from the current repository README and describe the main
-        workflow for creating, growing, and checking a wiki.
-      </p>
-    </header>
+    <article class="content">
+      <h1>Command reference</h1>
+      <p class="lead">Every command, flag, and example for the <code>wiki</code> CLI.</p>
 
-    <div class="docs-layout">
-      <aside class="toc">
-        <h2>Commands</h2>
-        <a class="active" href="commands.html">Command reference</a>
-        <a href="setup.html">Installation and setup</a>
-        <a href="providers.html">Providers and models</a>
-        <a href="architecture.html">Architecture and schema</a>
-      </aside>
+      <!-- init -->
+      <h2>wiki init</h2>
+      <p>Scaffold a new wiki project. Creates the directory structure, a <code>schema.md</code> behavioral spec, and starter <code>index.md</code> and <code>log.md</code> files.</p>
+      <pre><code>wiki init &lt;path&gt; [--name NAME]</code></pre>
 
-      <article class="doc-content">
-        <h2>`wiki init &lt;path&gt;`</h2>
-        <p>Scaffolds a new wiki project.</p>
-        <pre><code>wiki init my-research/
+      <table>
+        <thead>
+          <tr><th>Flag</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--name, -n</code></td><td>Human-readable name for the wiki. Used in index and log headings.</td></tr>
+        </tbody>
+      </table>
+
+      <p>Examples:</p>
+      <pre><code>wiki init my-research/
 wiki init my-research/ --name "ML Paper Notes"</code></pre>
 
-        <h2>`wiki ingest &lt;source&gt;`</h2>
-        <p>
-          Reads a source document and integrates it into the wiki by writing a source summary,
-          updating entity and concept pages, refreshing the index, and appending to the log.
-        </p>
-        <pre><code>wiki ingest raw/paper.md
-wiki ingest raw/article.md --provider openai --model gpt-4o
-wiki ingest raw/notes.md --thinking
-wiki ingest raw/paper.pdf --delete-pdf</code></pre>
-        <p>
-          Supported input formats are text-like files such as `.md`, `.txt`, `.rst`, and plain text.
-          PDFs can be converted to sibling `.txt` files first when `pdftotext` is installed.
-        </p>
+      <!-- ingest -->
+      <h2>wiki ingest</h2>
+      <p>
+        Read a source document and integrate it into the wiki. The LLM writes a source summary page, creates or updates concept and entity pages, refreshes <code>index.md</code>, and appends an entry to <code>log.md</code>.
+      </p>
+      <pre><code>wiki ingest &lt;source&gt; [flags]</code></pre>
 
-        <h2>`wiki query "&lt;question&gt;"`</h2>
-        <p>Asks a question against the existing wiki and synthesizes an answer from relevant pages.</p>
-        <pre><code>wiki query "what is the transformer architecture?"
+      <table>
+        <thead>
+          <tr><th>Flag</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--wiki, -w</code></td><td>Override the wiki root directory. Defaults to auto-discovery (walks up from current directory looking for <code>schema.md</code>).</td></tr>
+          <tr><td><code>--provider, -p</code></td><td>LLM provider: <code>anthropic</code> or <code>openai</code>.</td></tr>
+          <tr><td><code>--model, -m</code></td><td>Model name override, e.g. <code>claude-sonnet-4-6</code> or <code>gpt-4o-mini</code>.</td></tr>
+          <tr><td><code>--thinking</code></td><td>Show the model's extended reasoning steps (Anthropic only).</td></tr>
+          <tr><td><code>--delete-pdf</code></td><td>Delete the original PDF after converting to text.</td></tr>
+        </tbody>
+      </table>
+
+      <p>Examples:</p>
+      <pre><code># Ingest a markdown file
+wiki ingest raw/paper.md
+
+# Use OpenAI with a cheaper model
+wiki ingest raw/article.md --provider openai --model gpt-4o-mini
+
+# Ingest a PDF (requires pdftotext)
+wiki ingest raw/paper.pdf --delete-pdf
+
+# Show the model's reasoning
+wiki ingest raw/notes.md --thinking</code></pre>
+
+      <div class="callout">
+        <strong>Supported formats:</strong> <code>.md</code>, <code>.txt</code>, <code>.rst</code>, and other plain text files. PDFs are auto-converted to text when <code>pdftotext</code> is installed.
+      </div>
+
+      <!-- query -->
+      <h2>wiki query</h2>
+      <p>
+        Ask a question against the wiki. The LLM reads <code>index.md</code> to find relevant pages, reads those pages, and synthesizes an answer. With <code>--save</code>, the answer is filed back into the wiki as a new concept page.
+      </p>
+      <pre><code>wiki query "&lt;question&gt;" [flags]</code></pre>
+
+      <table>
+        <thead>
+          <tr><th>Flag</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--wiki, -w</code></td><td>Override wiki root directory.</td></tr>
+          <tr><td><code>--save, -s</code></td><td>Save the answer back into the wiki as a new concept page.</td></tr>
+          <tr><td><code>--format, -f</code></td><td>Output format: <code>markdown</code> (default), <code>table</code>, or <code>marp</code> (slide deck).</td></tr>
+          <tr><td><code>--output, -o</code></td><td>Write the answer to a file instead of printing to stdout.</td></tr>
+          <tr><td><code>--provider, -p</code></td><td>LLM provider override.</td></tr>
+          <tr><td><code>--model, -m</code></td><td>Model name override.</td></tr>
+          <tr><td><code>--thinking</code></td><td>Show extended reasoning steps (Anthropic only).</td></tr>
+        </tbody>
+      </table>
+
+      <p>Examples:</p>
+      <pre><code># Basic query
+wiki query "what is the transformer architecture?"
+
+# Get a comparison table
 wiki query "compare attention mechanisms across these papers" --format table
+
+# Save a good answer back into the wiki
 wiki query "summarize everything I know about RLHF" --save
-wiki query "what are the key open problems?" --output open-problems.md</code></pre>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Flag</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>--format markdown</code></td>
-              <td>Default, structured markdown output.</td>
-            </tr>
-            <tr>
-              <td><code>--format table</code></td>
-              <td>Returns the answer as a comparison table.</td>
-            </tr>
-            <tr>
-              <td><code>--format marp</code></td>
-              <td>Creates Marp slides for tools like Obsidian with the Marp plugin.</td>
-            </tr>
-            <tr>
-              <td><code>--save</code></td>
-              <td>Saves the answer back into the wiki as a new concept page.</td>
-            </tr>
-            <tr>
-              <td><code>--output &lt;file&gt;</code></td>
-              <td>Writes the answer to a file instead of printing it.</td>
-            </tr>
-          </tbody>
-        </table>
+# Write to a file
+wiki query "what are the key open problems?" --output open-problems.md
 
-        <h2>`wiki lint`</h2>
-        <p>Runs a health check across the wiki.</p>
-        <pre><code>wiki lint
+# Generate a Marp slide deck
+wiki query "give me a presentation on self-attention" --format marp --output slides.md</code></pre>
+
+      <div class="callout">
+        <strong>Tip:</strong> Use <code>--save</code> on high-quality queries. Answers filed back into the wiki become reusable knowledge that improves future queries.
+      </div>
+
+      <!-- lint -->
+      <h2>wiki lint</h2>
+      <p>
+        Run a health check across the wiki. The LLM reads all pages and reports issues. With <code>--fix</code>, it repairs them automatically.
+      </p>
+      <pre><code>wiki lint [flags]</code></pre>
+
+      <table>
+        <thead>
+          <tr><th>Flag</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--wiki, -w</code></td><td>Override wiki root directory.</td></tr>
+          <tr><td><code>--fix</code></td><td>Automatically fix issues instead of just reporting them.</td></tr>
+          <tr><td><code>--provider, -p</code></td><td>LLM provider override.</td></tr>
+          <tr><td><code>--model, -m</code></td><td>Model name override.</td></tr>
+          <tr><td><code>--thinking</code></td><td>Show extended reasoning steps (Anthropic only).</td></tr>
+        </tbody>
+      </table>
+
+      <p>What lint checks for:</p>
+      <ul>
+        <li>Orphan pages — pages with no inbound links from other wiki pages.</li>
+        <li>Missing cross-references — entities or concepts mentioned in pages but not linked.</li>
+        <li>Contradictions — conflicting claims across different pages.</li>
+        <li>Stale or vague claims — assertions that should be updated or clarified.</li>
+        <li>Concepts without their own page — ideas mentioned across multiple pages that deserve a dedicated page.</li>
+        <li>Outdated <code>index.md</code> entries — pages that exist but aren't listed, or listed but don't exist.</li>
+      </ul>
+
+      <p>Examples:</p>
+      <pre><code># Report only
+wiki lint
+
+# Auto-fix issues
 wiki lint --fix</code></pre>
-        <ul>
-          <li>Finds orphan pages.</li>
-          <li>Checks missing cross-references.</li>
-          <li>Flags contradictions and stale claims.</li>
-          <li>Detects concepts that should have their own pages.</li>
-          <li>Checks whether `index.md` is missing or outdated.</li>
-        </ul>
 
-        <h2>`wiki status`</h2>
-        <p>Shows a local summary of the wiki without calling the LLM.</p>
-        <pre><code>wiki status</code></pre>
+      <!-- status -->
+      <h2>wiki status</h2>
+      <p>Show a summary of the wiki — page counts by type, raw file count, total word count. Does not call the LLM.</p>
+      <pre><code>wiki status [--wiki PATH]</code></pre>
 
-        <h2>`wiki config`</h2>
-        <p>Manages provider, model, and API key settings in `~/.wiki-builder/config.json`.</p>
-        <pre><code>wiki config --provider anthropic --api-key sk-ant-...
+      <p>Example output:</p>
+      <pre><code>Wiki: AI Research
+  Sources:   12
+  Concepts:  34
+  Entities:  18
+  Raw files:  12
+  Words:     24,310</code></pre>
+
+      <!-- config -->
+      <h2>wiki config</h2>
+      <p>Manage provider, model, and API key settings. Saved to <code>~/.wiki-builder/config.json</code>.</p>
+      <pre><code>wiki config [flags]</code></pre>
+
+      <table>
+        <thead>
+          <tr><th>Flag</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--provider</code></td><td>Set the default provider: <code>anthropic</code> or <code>openai</code>.</td></tr>
+          <tr><td><code>--api-key</code></td><td>Save the API key for the selected provider.</td></tr>
+          <tr><td><code>--model</code></td><td>Set the default model name.</td></tr>
+          <tr><td><code>--show</code></td><td>Print the current configuration.</td></tr>
+        </tbody>
+      </table>
+
+      <p>Examples:</p>
+      <pre><code># Set Anthropic as default
+wiki config --provider anthropic --api-key sk-ant-...
+
+# Switch to OpenAI
 wiki config --provider openai --api-key sk-...
-wiki config --model gpt-4o-mini
+
+# Use a specific model by default
+wiki config --model claude-sonnet-4-6
+
+# Show current config
 wiki config --show</code></pre>
-      </article>
-    </div>
+
+      <p>Next: <a href="providers.html">Providers &amp; models</a></p>
+    </article>
+
   </div>
+
 </body>
 </html>

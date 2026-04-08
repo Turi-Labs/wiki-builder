@@ -3,83 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>wiki-builder Docs</title>
-  <link rel="stylesheet" href="../styles.css">
+  <title>wiki-builder — Documentation</title>
+  <link rel="stylesheet" href="docs.css">
 </head>
 <body>
-  <div class="doc-shell">
-    <nav class="nav">
-      <a class="brand" href="../index.html">wiki-builder</a>
-      <div class="nav-links">
-        <a href="../index.html">Home</a>
-        <a href="index.html">Docs</a>
-        <a href="setup.html">Setup</a>
-        <a href="commands.html">Commands</a>
-      </div>
-    </nav>
 
-    <header class="docs-hero">
-      <p class="eyebrow">Documentation</p>
-      <h1>Everything in one place.</h1>
-      <p class="docs-intro">
-        These pages organize the repository README into a browsable documentation set.
-        Start here if you want the overview, then jump into setup, commands, providers,
-        or the internal architecture.
-      </p>
-      <div class="inline-actions">
-        <a class="button primary" href="setup.html">Start with setup</a>
-        <a class="button secondary" href="../README.md">Open README</a>
-      </div>
-    </header>
-
-    <div class="docs-layout">
-      <aside class="toc">
-        <h2>Docs map</h2>
-        <a class="active" href="index.html">Overview</a>
-        <a href="setup.html">Installation and setup</a>
-        <a href="commands.html">Command reference</a>
-        <a href="providers.html">Providers and models</a>
-        <a href="architecture.html">Architecture and schema</a>
-      </aside>
-
-      <article class="doc-content">
-        <h2>What wiki-builder does</h2>
-        <p>
-          `wiki-builder` is a CLI that uses LLMs to build and maintain a personal knowledge
-          base as a structured markdown wiki. You add source documents, and the tool writes
-          summaries, concept pages, entity pages, cross-references, and a running index.
-        </p>
-
-        <h2>Why this approach is different</h2>
-        <p>
-          Traditional document tools often recompute context on every question. `wiki-builder`
-          instead integrates source material into a persistent wiki so knowledge accumulates
-          over time. Querying happens against that already-synthesized knowledge base.
-        </p>
-
-        <h2>Core workflow</h2>
-        <ol>
-          <li>Initialize a wiki project.</li>
-          <li>Add source documents into `raw/`.</li>
-          <li>Run `wiki ingest` to let the LLM update the wiki.</li>
-          <li>Use `wiki query` to ask questions across the accumulated pages.</li>
-          <li>Run `wiki lint` and `wiki status` to keep the wiki healthy and inspectable.</li>
-        </ol>
-
-        <h2>Wiki layout</h2>
-        <pre><code>raw/                  # source documents you provide
-wiki/                 # markdown knowledge base maintained by the LLM
-schema.md             # behavioral rules and structural conventions</code></pre>
-
-        <h2>Read next</h2>
-        <ul>
-          <li><a href="setup.html">Installation and setup</a></li>
-          <li><a href="commands.html">Command reference</a></li>
-          <li><a href="providers.html">Providers and models</a></li>
-          <li><a href="architecture.html">Architecture and schema</a></li>
-        </ul>
-      </article>
+  <nav>
+    <a class="brand" href="../landing/index.html">wiki-builder</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Docs</a>
+      <a href="setup.html">Setup</a>
+      <a href="commands.html">Commands</a>
+      <a href="providers.html">Providers</a>
     </div>
+  </nav>
+
+  <div class="page">
+
+    <aside class="sidebar">
+      <p class="sidebar-label">Documentation</p>
+      <nav>
+        <a href="index.html" class="active">Overview</a>
+        <a href="setup.html">Installation &amp; setup</a>
+        <a href="commands.html">Command reference</a>
+        <a href="providers.html">Providers &amp; models</a>
+        <a href="architecture.html">Architecture</a>
+      </nav>
+    </aside>
+
+    <article class="content">
+      <h1>Documentation</h1>
+      <p class="lead">Everything you need to install, configure, and use wiki-builder.</p>
+
+      <h2>What is wiki-builder?</h2>
+      <p>
+        wiki-builder is a command-line tool that uses an LLM to build and maintain a personal knowledge base as a folder of structured markdown files. You feed it source documents — papers, articles, notes, PDFs — and it writes summaries, concept pages, entity pages, cross-references, and a running index. Over time the wiki compounds.
+      </p>
+      <p>
+        Unlike retrieval-augmented generation (RAG), which re-derives context from raw documents on every query, wiki-builder integrates sources into a persistent wiki. Queries run against already-synthesized knowledge, which makes answers faster, more coherent, and easier to trace.
+      </p>
+
+      <h2>How it works</h2>
+      <p>The core loop is simple:</p>
+      <ol>
+        <li>You run <code>wiki init</code> to scaffold a project folder.</li>
+        <li>You drop source documents into <code>raw/</code>.</li>
+        <li>You run <code>wiki ingest &lt;file&gt;</code>. The LLM reads the source and writes structured pages into <code>wiki/</code>.</li>
+        <li>You run <code>wiki query "..."</code> to ask questions. The LLM reads the wiki and synthesizes an answer.</li>
+        <li>You run <code>wiki lint</code> occasionally to keep the wiki healthy.</li>
+      </ol>
+      <p>
+        The LLM is given five file tools — read, write, append, list, search — and a <code>schema.md</code> file that defines how pages should be structured. It uses those tools autonomously to maintain the wiki.
+      </p>
+
+      <h2>The wiki structure</h2>
+      <p>After initialization, a project looks like this:</p>
+      <pre><code>my-research/
+├── schema.md          # behavioral spec — the LLM reads this every run
+├── .gitignore
+├── raw/               # your source documents (immutable)
+│   └── assets/
+└── wiki/              # LLM-maintained knowledge base
+    ├── index.md       # master catalog of all pages
+    ├── log.md         # append-only operation log
+    ├── sources/       # one summary page per source document
+    ├── concepts/      # topic and theory pages
+    └── entities/      # people, orgs, products, events</code></pre>
+
+      <h2>The schema</h2>
+      <p>
+        <code>schema.md</code> is the LLM's behavioral spec. It defines directory layout, page structure, YAML frontmatter, cross-linking rules, naming conventions, and the step-by-step workflows for ingest, query, and lint. The LLM reads it at the start of every operation.
+      </p>
+      <p>
+        You can edit <code>schema.md</code> to customize behavior for your domain — change page structure, add new conventions, or adjust what the LLM prioritizes — without touching any code.
+      </p>
+
+      <h2>What the LLM writes</h2>
+      <p>After ingesting a source document, the LLM typically creates or updates:</p>
+      <ul>
+        <li>A <strong>source summary page</strong> in <code>wiki/sources/</code> with key findings and a reading log entry.</li>
+        <li><strong>Concept pages</strong> in <code>wiki/concepts/</code> for ideas, methods, and theories introduced by the source.</li>
+        <li><strong>Entity pages</strong> in <code>wiki/entities/</code> for people, organizations, tools, and systems mentioned.</li>
+        <li>Updates to <code>wiki/index.md</code> and an entry in <code>wiki/log.md</code>.</li>
+      </ul>
+      <p>All pages include YAML frontmatter and markdown cross-links to related pages.</p>
+
+      <h2>Supported providers</h2>
+      <p>
+        wiki-builder works with <strong>Anthropic</strong> (default, <code>claude-opus-4-6</code>) and <strong>OpenAI</strong> (<code>gpt-4o</code>). You can switch providers per command or set a default with <code>wiki config</code>. See the <a href="providers.html">providers page</a> for details.
+      </p>
+
+      <h2>Where to go next</h2>
+      <ul>
+        <li><a href="setup.html">Installation &amp; setup</a> — install the CLI, set an API key, run the quickstart.</li>
+        <li><a href="commands.html">Command reference</a> — every command, flag, and example.</li>
+        <li><a href="providers.html">Providers &amp; models</a> — configure Anthropic or OpenAI.</li>
+      </ul>
+    </article>
+
   </div>
+
 </body>
 </html>
