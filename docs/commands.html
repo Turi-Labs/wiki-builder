@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wiki-builder Docs | Commands</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="doc-shell">
+    <nav class="nav">
+      <a class="brand" href="../index.html">wiki-builder</a>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Docs</a>
+        <a href="setup.html">Setup</a>
+        <a href="architecture.html">Architecture</a>
+      </div>
+    </nav>
+
+    <header class="docs-hero">
+      <p class="eyebrow">Commands</p>
+      <h1>Reference for the `wiki` CLI.</h1>
+      <p class="docs-intro">
+        These commands come directly from the current repository README and describe the main
+        workflow for creating, growing, and checking a wiki.
+      </p>
+    </header>
+
+    <div class="docs-layout">
+      <aside class="toc">
+        <h2>Commands</h2>
+        <a class="active" href="commands.html">Command reference</a>
+        <a href="setup.html">Installation and setup</a>
+        <a href="providers.html">Providers and models</a>
+        <a href="architecture.html">Architecture and schema</a>
+      </aside>
+
+      <article class="doc-content">
+        <h2>`wiki init &lt;path&gt;`</h2>
+        <p>Scaffolds a new wiki project.</p>
+        <pre><code>wiki init my-research/
+wiki init my-research/ --name "ML Paper Notes"</code></pre>
+
+        <h2>`wiki ingest &lt;source&gt;`</h2>
+        <p>
+          Reads a source document and integrates it into the wiki by writing a source summary,
+          updating entity and concept pages, refreshing the index, and appending to the log.
+        </p>
+        <pre><code>wiki ingest raw/paper.md
+wiki ingest raw/article.md --provider openai --model gpt-4o
+wiki ingest raw/notes.md --thinking
+wiki ingest raw/paper.pdf --delete-pdf</code></pre>
+        <p>
+          Supported input formats are text-like files such as `.md`, `.txt`, `.rst`, and plain text.
+          PDFs can be converted to sibling `.txt` files first when `pdftotext` is installed.
+        </p>
+
+        <h2>`wiki query "&lt;question&gt;"`</h2>
+        <p>Asks a question against the existing wiki and synthesizes an answer from relevant pages.</p>
+        <pre><code>wiki query "what is the transformer architecture?"
+wiki query "compare attention mechanisms across these papers" --format table
+wiki query "summarize everything I know about RLHF" --save
+wiki query "what are the key open problems?" --output open-problems.md</code></pre>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Flag</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>--format markdown</code></td>
+              <td>Default, structured markdown output.</td>
+            </tr>
+            <tr>
+              <td><code>--format table</code></td>
+              <td>Returns the answer as a comparison table.</td>
+            </tr>
+            <tr>
+              <td><code>--format marp</code></td>
+              <td>Creates Marp slides for tools like Obsidian with the Marp plugin.</td>
+            </tr>
+            <tr>
+              <td><code>--save</code></td>
+              <td>Saves the answer back into the wiki as a new concept page.</td>
+            </tr>
+            <tr>
+              <td><code>--output &lt;file&gt;</code></td>
+              <td>Writes the answer to a file instead of printing it.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>`wiki lint`</h2>
+        <p>Runs a health check across the wiki.</p>
+        <pre><code>wiki lint
+wiki lint --fix</code></pre>
+        <ul>
+          <li>Finds orphan pages.</li>
+          <li>Checks missing cross-references.</li>
+          <li>Flags contradictions and stale claims.</li>
+          <li>Detects concepts that should have their own pages.</li>
+          <li>Checks whether `index.md` is missing or outdated.</li>
+        </ul>
+
+        <h2>`wiki status`</h2>
+        <p>Shows a local summary of the wiki without calling the LLM.</p>
+        <pre><code>wiki status</code></pre>
+
+        <h2>`wiki config`</h2>
+        <p>Manages provider, model, and API key settings in `~/.wiki-builder/config.json`.</p>
+        <pre><code>wiki config --provider anthropic --api-key sk-ant-...
+wiki config --provider openai --api-key sk-...
+wiki config --model gpt-4o-mini
+wiki config --show</code></pre>
+      </article>
+    </div>
+  </div>
+</body>
+</html>

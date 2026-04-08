@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wiki-builder Docs | Providers</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="doc-shell">
+    <nav class="nav">
+      <a class="brand" href="../index.html">wiki-builder</a>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Docs</a>
+        <a href="setup.html">Setup</a>
+        <a href="commands.html">Commands</a>
+      </div>
+    </nav>
+
+    <header class="docs-hero">
+      <p class="eyebrow">Providers</p>
+      <h1>Anthropic and OpenAI are both supported.</h1>
+      <p class="docs-intro">
+        You can set a default provider globally or override the provider and model per command.
+      </p>
+    </header>
+
+    <div class="docs-layout">
+      <aside class="toc">
+        <h2>On this page</h2>
+        <a class="active" href="providers.html">Providers and models</a>
+        <a href="setup.html">Installation and setup</a>
+        <a href="commands.html">Command reference</a>
+        <a href="architecture.html">Architecture and schema</a>
+      </aside>
+
+      <article class="doc-content">
+        <h2>Supported providers</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Default model</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>anthropic</code></td>
+              <td><code>claude-opus-4-6</code></td>
+              <td>Default provider. Supports <code>--thinking</code> for extended reasoning.</td>
+            </tr>
+            <tr>
+              <td><code>openai</code></td>
+              <td><code>gpt-4o</code></td>
+              <td>Supports full tool use. The <code>--thinking</code> flag has no effect.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Resolution order</h2>
+        <ol>
+          <li><code>--provider</code> and <code>--model</code> CLI flags</li>
+          <li><code>WIKI_PROVIDER</code>, <code>ANTHROPIC_API_KEY</code>, and <code>OPENAI_API_KEY</code> environment variables</li>
+          <li>Saved config in <code>~/.wiki-builder/config.json</code></li>
+          <li>Default values: Anthropic and <code>claude-opus-4-6</code></li>
+        </ol>
+
+        <h2>Examples</h2>
+        <pre><code># Use OpenAI for one command
+wiki ingest raw/paper.md --provider openai
+
+# Use a cheaper model for quick queries
+wiki query "what is X?" --provider openai --model gpt-4o-mini
+
+# Switch the default provider
+wiki config --provider openai
+
+# Override per session
+WIKI_PROVIDER=openai wiki ingest raw/paper.md</code></pre>
+
+        <h2>Practical note</h2>
+        <p>
+          The README notes that a typical ingest can touch 5 to 15 files and may involve
+          10 to 20 tool-calling turns. Costs depend on source length, wiki size, and model choice.
+        </p>
+      </article>
+    </div>
+  </div>
+</body>
+</html>
