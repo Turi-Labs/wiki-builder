@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wiki-builder Docs | Setup</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="doc-shell">
+    <nav class="nav">
+      <a class="brand" href="../index.html">wiki-builder</a>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Docs</a>
+        <a href="commands.html">Commands</a>
+        <a href="providers.html">Providers</a>
+      </div>
+    </nav>
+
+    <header class="docs-hero">
+      <p class="eyebrow">Setup</p>
+      <h1>Install the CLI and configure a provider.</h1>
+      <p class="docs-intro">
+        `wiki-builder` requires Python 3.10+ and an API key for either Anthropic or OpenAI.
+      </p>
+    </header>
+
+    <div class="docs-layout">
+      <aside class="toc">
+        <h2>On this page</h2>
+        <a class="active" href="setup.html">Installation and setup</a>
+        <a href="index.html">Docs overview</a>
+        <a href="commands.html">Command reference</a>
+        <a href="providers.html">Providers and models</a>
+        <a href="architecture.html">Architecture and schema</a>
+      </aside>
+
+      <article class="doc-content">
+        <h2>Installation</h2>
+        <pre><code>git clone https://github.com/yourname/wiki-builder
+cd wiki-builder
+pip install -e .</code></pre>
+        <p>This installs the `wiki` command globally in your environment.</p>
+
+        <h2>Dependencies</h2>
+        <p>The package depends on `anthropic`, `openai`, `typer`, and `rich`.</p>
+
+        <h2>API keys</h2>
+        <p>Set an API key with environment variables:</p>
+        <pre><code># Anthropic
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# OpenAI
+export OPENAI_API_KEY=sk-...</code></pre>
+
+        <p>Or save configuration with the CLI:</p>
+        <pre><code>wiki config --provider anthropic --api-key sk-ant-...
+wiki config --provider openai --api-key sk-...</code></pre>
+
+        <h2>Quickstart</h2>
+        <pre><code>wiki init my-research/ --name "AI Research"
+cp ~/papers/attention-is-all-you-need.md my-research/raw/
+cd my-research
+wiki ingest raw/attention-is-all-you-need.md
+wiki query "what is self-attention and why does it matter?"
+wiki lint
+wiki status</code></pre>
+
+        <h2>What `wiki init` creates</h2>
+        <pre><code>my-research/
+├── schema.md
+├── .gitignore
+├── raw/
+│   └── assets/
+└── wiki/
+    ├── index.md
+    ├── log.md
+    ├── concepts/
+    ├── entities/
+    └── sources/</code></pre>
+
+        <h2>Recommended working style</h2>
+        <ul>
+          <li>Open the wiki root in Obsidian or VS Code.</li>
+          <li>Ingest sources one at a time for better synthesis quality.</li>
+          <li>Edit `schema.md` when you want different page structure or conventions.</li>
+          <li>Keep `raw/` immutable so it remains your source of truth.</li>
+          <li>Use git in the wiki root so every ingest becomes a natural commit point.</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</body>
+</html>

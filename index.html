@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wiki-builder | Build persistent knowledge bases with LLMs</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav">
+      <a class="brand" href="index.html">wiki-builder</a>
+      <div class="nav-links">
+        <a href="docs/index.html">Docs</a>
+        <a href="docs/setup.html">Setup</a>
+        <a href="docs/commands.html">Commands</a>
+        <a href="README.md">README</a>
+      </div>
+    </nav>
+
+    <section class="hero-content">
+      <p class="eyebrow">CLI for persistent wiki-based knowledge systems</p>
+      <h1>Turn source documents into a growing markdown wiki.</h1>
+      <p class="lead">
+        `wiki-builder` ingests documents with an LLM, writes structured markdown pages,
+        maintains cross-links, and lets you query accumulated knowledge instead of
+        re-deriving context from scratch every time.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="docs/index.html">Read the docs</a>
+        <a class="button secondary" href="docs/setup.html">Get started</a>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Why it exists</p>
+        <h2>Most document tools answer questions. This one builds memory.</h2>
+      </div>
+      <div class="grid three-up">
+        <article class="card">
+          <h3>Persistent synthesis</h3>
+          <p>
+            Each ingest updates a real wiki with source summaries, concept pages, entity pages,
+            and an evolving index.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Markdown-first output</h3>
+          <p>
+            The knowledge base lives in normal files you can open in Obsidian, VS Code,
+            or any text editor.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Agentic workflow</h3>
+          <p>
+            The LLM uses file tools to read the schema, inspect the wiki, and update
+            multiple pages in a single operation.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="section-heading">
+        <p class="eyebrow">How it works</p>
+        <h2>Documents go in. Structured knowledge comes out.</h2>
+      </div>
+      <div class="steps">
+        <article class="step">
+          <span class="step-number">1</span>
+          <h3>Create a wiki</h3>
+          <p>Initialize a project with `schema.md`, `raw/`, and a writable `wiki/` directory.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">2</span>
+          <h3>Add source files</h3>
+          <p>Drop markdown, text, or converted PDF content into `raw/`.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">3</span>
+          <h3>Ingest with the LLM</h3>
+          <p>The agent creates summaries, concepts, entities, index updates, and log entries.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">4</span>
+          <h3>Query and compound</h3>
+          <p>Ask questions against the wiki and optionally save strong answers back into it.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Project layout</p>
+        <h2>The wiki stays transparent and inspectable.</h2>
+      </div>
+      <div class="code-card">
+        <pre><code>raw/                  # immutable source documents
+├── paper.md
+├── article.md
+└── assets/
+
+wiki/                 # LLM-maintained markdown knowledge base
+├── index.md
+├── log.md
+├── sources/
+├── concepts/
+└── entities/
+
+schema.md             # conventions and workflows the LLM follows</code></pre>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="section-heading">
+        <p class="eyebrow">Quickstart</p>
+        <h2>Go from empty folder to searchable wiki in minutes.</h2>
+      </div>
+      <div class="code-card">
+        <pre><code>git clone https://github.com/yourname/wiki-builder
+cd wiki-builder
+pip install -e .
+
+wiki init my-research/ --name "AI Research"
+cp ~/papers/attention-is-all-you-need.md my-research/raw/
+cd my-research
+wiki ingest raw/attention-is-all-you-need.md
+wiki query "what is self-attention and why does it matter?"
+wiki lint
+wiki status</code></pre>
+      </div>
+      <p class="section-note">
+        Setup details, provider configuration, and command references live in the docs.
+      </p>
+      <a class="button primary" href="docs/setup.html">Open setup guide</a>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Docs</p>
+        <h2>Everything on the site is sourced from the repository README.</h2>
+      </div>
+      <div class="grid docs-grid">
+        <a class="doc-link card" href="docs/index.html">
+          <h3>Documentation overview</h3>
+          <p>Start here for the big picture and page map.</p>
+        </a>
+        <a class="doc-link card" href="docs/setup.html">
+          <h3>Installation and setup</h3>
+          <p>Requirements, API keys, and the quickstart flow.</p>
+        </a>
+        <a class="doc-link card" href="docs/commands.html">
+          <h3>Command reference</h3>
+          <p>`init`, `ingest`, `query`, `lint`, `status`, and `config`.</p>
+        </a>
+        <a class="doc-link card" href="docs/providers.html">
+          <h3>Providers and models</h3>
+          <p>Anthropic and OpenAI support, config resolution, and examples.</p>
+        </a>
+        <a class="doc-link card" href="docs/architecture.html">
+          <h3>Architecture and schema</h3>
+          <p>How the agent, tools, schema, and project files fit together.</p>
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

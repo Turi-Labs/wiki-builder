@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wiki-builder Docs</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="doc-shell">
+    <nav class="nav">
+      <a class="brand" href="../index.html">wiki-builder</a>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Docs</a>
+        <a href="setup.html">Setup</a>
+        <a href="commands.html">Commands</a>
+      </div>
+    </nav>
+
+    <header class="docs-hero">
+      <p class="eyebrow">Documentation</p>
+      <h1>Everything in one place.</h1>
+      <p class="docs-intro">
+        These pages organize the repository README into a browsable documentation set.
+        Start here if you want the overview, then jump into setup, commands, providers,
+        or the internal architecture.
+      </p>
+      <div class="inline-actions">
+        <a class="button primary" href="setup.html">Start with setup</a>
+        <a class="button secondary" href="../README.md">Open README</a>
+      </div>
+    </header>
+
+    <div class="docs-layout">
+      <aside class="toc">
+        <h2>Docs map</h2>
+        <a class="active" href="index.html">Overview</a>
+        <a href="setup.html">Installation and setup</a>
+        <a href="commands.html">Command reference</a>
+        <a href="providers.html">Providers and models</a>
+        <a href="architecture.html">Architecture and schema</a>
+      </aside>
+
+      <article class="doc-content">
+        <h2>What wiki-builder does</h2>
+        <p>
+          `wiki-builder` is a CLI that uses LLMs to build and maintain a personal knowledge
+          base as a structured markdown wiki. You add source documents, and the tool writes
+          summaries, concept pages, entity pages, cross-references, and a running index.
+        </p>
+
+        <h2>Why this approach is different</h2>
+        <p>
+          Traditional document tools often recompute context on every question. `wiki-builder`
+          instead integrates source material into a persistent wiki so knowledge accumulates
+          over time. Querying happens against that already-synthesized knowledge base.
+        </p>
+
+        <h2>Core workflow</h2>
+        <ol>
+          <li>Initialize a wiki project.</li>
+          <li>Add source documents into `raw/`.</li>
+          <li>Run `wiki ingest` to let the LLM update the wiki.</li>
+          <li>Use `wiki query` to ask questions across the accumulated pages.</li>
+          <li>Run `wiki lint` and `wiki status` to keep the wiki healthy and inspectable.</li>
+        </ol>
+
+        <h2>Wiki layout</h2>
+        <pre><code>raw/                  # source documents you provide
+wiki/                 # markdown knowledge base maintained by the LLM
+schema.md             # behavioral rules and structural conventions</code></pre>
+
+        <h2>Read next</h2>
+        <ul>
+          <li><a href="setup.html">Installation and setup</a></li>
+          <li><a href="commands.html">Command reference</a></li>
+          <li><a href="providers.html">Providers and models</a></li>
+          <li><a href="architecture.html">Architecture and schema</a></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</body>
+</html>

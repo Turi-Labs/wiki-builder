@@ -135,9 +135,10 @@ Reads a source document and integrates it into the wiki. The LLM:
 wiki ingest raw/paper.md
 wiki ingest raw/article.md --provider openai --model gpt-4o
 wiki ingest raw/notes.md --thinking          # show Claude's reasoning
+wiki ingest raw/paper.pdf --delete-pdf       # convert to text, then delete the PDF
 ```
 
-Supported source formats: any text file (`.md`, `.txt`, `.rst`, plain text). For PDFs, convert to markdown first (e.g. with `markitdown` or Obsidian Web Clipper).
+Supported source formats: any text file (`.md`, `.txt`, `.rst`, plain text). PDFs are converted to sibling `.txt` files before ingestion when `pdftotext` from Poppler is installed.
 
 ---
 

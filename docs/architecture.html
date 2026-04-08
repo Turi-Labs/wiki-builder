@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wiki-builder Docs | Architecture</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="doc-shell">
+    <nav class="nav">
+      <a class="brand" href="../index.html">wiki-builder</a>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="index.html">Docs</a>
+        <a href="commands.html">Commands</a>
+        <a href="providers.html">Providers</a>
+      </div>
+    </nav>
+
+    <header class="docs-hero">
+      <p class="eyebrow">Architecture</p>
+      <h1>How the CLI, agent, tools, and schema fit together.</h1>
+      <p class="docs-intro">
+        This page captures the README sections on schema, package structure, tools, and workflow guidance.
+      </p>
+    </header>
+
+    <div class="docs-layout">
+      <aside class="toc">
+        <h2>On this page</h2>
+        <a class="active" href="architecture.html">Architecture and schema</a>
+        <a href="setup.html">Installation and setup</a>
+        <a href="commands.html">Command reference</a>
+        <a href="providers.html">Providers and models</a>
+      </aside>
+
+      <article class="doc-content">
+        <h2>`schema.md`</h2>
+        <p>
+          `schema.md` tells the LLM how to behave. It defines directory structure, page format,
+          frontmatter conventions, cross-linking rules, workflows, and naming conventions.
+        </p>
+        <p>
+          Because the agent reads `schema.md` at the start of every operation, editing it is the
+          main way to customize behavior for different domains or wiki structures.
+        </p>
+
+        <h2>Project structure</h2>
+        <pre><code>wiki-builder/
+├── pyproject.toml
+└── wiki_builder/
+    ├── __init__.py
+    ├── cli.py
+    ├── agent.py
+    ├── tools.py
+    ├── config.py
+    └── templates.py</code></pre>
+
+        <h2>Module roles</h2>
+        <ul>
+          <li><code>cli.py</code>: Typer commands such as `init`, `ingest`, `query`, `lint`, `status`, and `config`.</li>
+          <li><code>agent.py</code>: Provider backends, agent loop, and prompt builders.</li>
+          <li><code>tools.py</code>: File tools used by the LLM while operating on the wiki.</li>
+          <li><code>config.py</code>: API key and provider resolution logic.</li>
+          <li><code>templates.py</code>: Default contents written during `wiki init`.</li>
+        </ul>
+
+        <h2>LLM tools</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>read_file(path)</code></td>
+              <td>Reads files relative to the wiki root.</td>
+            </tr>
+            <tr>
+              <td><code>write_file(path, content)</code></td>
+              <td>Writes or overwrites a file and creates parent directories as needed.</td>
+            </tr>
+            <tr>
+              <td><code>append_to_file(path, content)</code></td>
+              <td>Appends content, typically used for `log.md`.</td>
+            </tr>
+            <tr>
+              <td><code>list_directory(path)</code></td>
+              <td>Lists files and subdirectories.</td>
+            </tr>
+            <tr>
+              <td><code>search_wiki(query)</code></td>
+              <td>Searches markdown files in the wiki for relevant terms.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Workflow tips from the README</h2>
+        <ul>
+          <li>Use Obsidian as a frontend if you want graph view and plugins like Dataview or Marp.</li>
+          <li>Ingest one source at a time for better results.</li>
+          <li>Use `--save` on valuable queries so good answers become reusable knowledge.</li>
+          <li>Version the wiki with git so ingests and query saves become natural commits.</li>
+        </ul>
+
+        <h2>Current limitations</h2>
+        <ul>
+          <li>Native ingestion focuses on plain text-like source formats.</li>
+          <li>The README suggests the current index-based approach works best up to roughly 100 to 200 sources.</li>
+          <li>Images are not automatically processed from sources.</li>
+          <li>Costs vary based on model, source size, and wiki size.</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</body>
+</html>
