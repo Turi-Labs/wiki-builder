@@ -11,3 +11,6 @@ venv/
 env/
 .env
 *.dist-info/
+
+# Personal reference
+CHANGES.md
