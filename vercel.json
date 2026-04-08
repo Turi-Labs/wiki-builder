@@ -1,4 +1,7 @@
 {
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "framework": null,
   "redirects": [
     { "source": "/", "destination": "/landing/index.html" }
   ]
