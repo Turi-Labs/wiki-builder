@@ -37,7 +37,7 @@ The LLM runs as an agent with five file operation tools (`read_file`, `write_fil
 Requires Python 3.10+.
 
 ```bash
-git clone https://github.com/yourname/wiki-builder
+git clone https://github.com/Turi-Labs/wiki-builder
 cd wiki-builder
 pip install -e .
 ```
